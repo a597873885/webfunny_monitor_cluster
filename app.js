@@ -71,7 +71,7 @@ app.use(eventRoute.routes(), eventRoute.allowedMethods())
 // error-handling
 app.on('error', (err, ctx) => {
     console.error('server error', err, ctx)
-    loggerUpload({ error })
+    loggerUpload({ err })
 });
 
 module.exports = app

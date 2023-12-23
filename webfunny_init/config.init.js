@@ -49,7 +49,7 @@ const domainConfig = {
 * center: 应用中心数据库
 * monitor：前端监控数据库
 * event: 埋点系统数据库
-* 三个可以共用一台数据库
+* monitor、event可以共用一台数据库
 * 配置更改后，需重启
 */
 const mysqlConfig = {
