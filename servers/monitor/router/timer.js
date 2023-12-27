@@ -91,7 +91,7 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
 
         //启动一个定时器
         timerUtil((dateTime) => {
-
+            const tempDate = new Date()
             const hourMinuteStr = dateTime.Format("hh:mm")
             const hourTimeStr = dateTime.Format("hh:mm:ss")
             const minuteTimeStr = dateTime.Format("mm:ss")
