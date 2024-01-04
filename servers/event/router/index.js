@@ -33,7 +33,7 @@ global.eventInfo = {
     logInfoQueue: {}, // 存放日志队列的对象
     tokenListInMemory: {}, //内存中的token列表 
     calculateFlowData: {}, // 存储流量数据
-    pointAndFields: {}, // 存放点位下的字段信息
+    pointAndFields: [], // 存放点位下的字段信息
     funnelCardAndPointRelations: {}, // 存放漏斗卡片关系数据
 }
 global.tableTimeStamp = new Date().Format("yyyyMMdd")
