@@ -23,6 +23,7 @@ global.monitorInfo = {
     waitCounts: 40,   // 日志等待上报的时间间隔，可以调整日志上报的密度（40代表8s上报一次）
     logCountInMinute: 0, // 每分钟的日志量
     logCountInMinuteList: [], // 每分钟日志量数组
+    projectLogCountList: {}, // 每个项目当天的日志总量
     errorLogListForLast200: [],  // 存放最近200条报错日志
     purchaseCodeValid: false,
     warningMessageList: [],
