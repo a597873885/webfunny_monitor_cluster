@@ -100,6 +100,12 @@ const Columns = {
     allowNull: true,
     field: 'alarmStatus'
    },
+   //卡片描述
+   describe: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: 'describe'
+   },
     // 创建人
     createBy: {
       type: DataTypes.STRING,

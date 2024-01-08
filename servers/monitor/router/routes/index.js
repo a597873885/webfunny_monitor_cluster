@@ -19,6 +19,9 @@ const pageLoadInfoRouter = require('./pageLoadInfo')
 const projectRouter = require('./project')
 const resourceLoadInfoRouter = require('./resourceLoadInfo')
 
+// walkingfunny相关接口，统一管理
+const walkingfunnyRouter = require('./walkingfunny')
+
 const createRouter = (router) => {
   alarmRouter(router)
   alarmRuleRouter(router)
@@ -40,6 +43,8 @@ const createRouter = (router) => {
   pageLoadInfoRouter(router)
   projectRouter(router)
   resourceLoadInfoRouter(router)
+  
+  walkingfunnyRouter(router)
 }
 
 module.exports = {
