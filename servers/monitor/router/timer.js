@@ -195,11 +195,12 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
                 Common.pm2Flush()
             }
             // 凌晨0点01分开始创建当天的数据库表
-            // if (hourTimeStr == "00:00:01") {
-            //     if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {
-            //         Common.createTable(0)
-            //     }
-            // } 
+            if (hourTimeStr == "00:00:01") {
+                // if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {
+                //     Common.createTable(0)
+                // }
+                global.monitorInfo.projectLogCountList = {}
+            } 
             // // 晚上11点55分开始创建第二天的数据库表
             // if (hourTimeStr == "23:55:01") {
             //     if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {
