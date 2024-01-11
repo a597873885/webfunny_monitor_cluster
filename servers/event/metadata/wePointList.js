@@ -39,6 +39,24 @@
                     "weType": 0
                 },
                 {
+                    "fieldName": "weFullPath",
+                    "fieldAlias": "页面全路径",
+                    "fieldType": "VARCHAR",
+                    "fieldLength": 2000,
+                    "fieldDesc": "页面全路径",
+                    "groupByFlag": 1,
+                    "weType": 0
+                },
+                {
+                    "fieldName": "weTitle",
+                    "fieldAlias": "元素标题",
+                    "fieldType": "VARCHAR",
+                    "fieldLength": 500,
+                    "fieldDesc": "元素标题",
+                    "groupByFlag": 1,
+                    "weType": 0
+                },
+                {
                     "fieldName": "weXPath",
                     "fieldAlias": "元素路径",
                     "fieldType": "VARCHAR",
@@ -62,24 +80,6 @@
                     "fieldType": "INT",
                     "fieldLength": 10,
                     "fieldDesc": "用于记录鼠标点击，鼠标停留的位置y坐标",
-                    "groupByFlag": 0,
-                    "weType": 0
-                },
-                {
-                    "fieldName": "weScrollX",
-                    "fieldAlias": "偏移x",
-                    "fieldType": "INT",
-                    "fieldLength": 10,
-                    "fieldDesc": "用于记录偏移x量",
-                    "groupByFlag": 0,
-                    "weType": 0
-                },
-                {
-                    "fieldName": "weScrollY",
-                    "fieldAlias": "偏移y",
-                    "fieldType": "INT",
-                    "fieldLength": 10,
-                    "fieldDesc": "用于记录偏移y量",
                     "groupByFlag": 0,
                     "weType": 0
                 },
@@ -119,6 +119,24 @@
             "replacePointIdKey": "HeatMapClickPointId",
             "fieldList": [
                 {
+                    "fieldName": "weFullPath",
+                    "fieldAlias": "页面全路径",
+                    "fieldType": "VARCHAR",
+                    "fieldLength": 2000,
+                    "fieldDesc": "页面全路径",
+                    "groupByFlag": 1,
+                    "weType": 0
+                },
+                {
+                    "fieldName": "weTitle",
+                    "fieldAlias": "元素标题",
+                    "fieldType": "VARCHAR",
+                    "fieldLength": 500,
+                    "fieldDesc": "元素标题",
+                    "groupByFlag": 1,
+                    "weType": 0
+                },
+                {
                     "fieldName": "weXPath",
                     "fieldAlias": "元素路径",
                     "fieldType": "VARCHAR",
@@ -142,24 +160,6 @@
                     "fieldType": "INT",
                     "fieldLength": 10,
                     "fieldDesc": "用于记录鼠标点击，鼠标停留的位置y坐标",
-                    "groupByFlag": 0,
-                    "weType": 0
-                },
-                {
-                    "fieldName": "weScrollX",
-                    "fieldAlias": "偏移x",
-                    "fieldType": "INT",
-                    "fieldLength": 10,
-                    "fieldDesc": "用于记录偏移x量",
-                    "groupByFlag": 0,
-                    "weType": 0
-                },
-                {
-                    "fieldName": "weScrollY",
-                    "fieldAlias": "偏移y",
-                    "fieldType": "INT",
-                    "fieldLength": 10,
-                    "fieldDesc": "用于记录偏移y量",
                     "groupByFlag": 0,
                     "weType": 0
                 },
