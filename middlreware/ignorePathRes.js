@@ -20,6 +20,7 @@ module.exports = [
     "/refreshValidateCode", "/login", "/register", "/registerForAdmin",
     "/sendRegisterEmail", "/resetPwd", "/projectSimpleListByWebmonitorIds",
     "/eventBaseInfo", "/storeTokenToMemory", "/upgradeVersion", "buryPointTest/searchExport",
+    "/buryPointCard/getHeatMapPerData",
 
     // walkingfunny 过滤登录校验
     "/walkingfunnyWithoutLogin/",

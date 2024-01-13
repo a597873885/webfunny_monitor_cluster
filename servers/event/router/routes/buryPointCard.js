@@ -21,4 +21,5 @@ module.exports = (router) => {
   router.post('/buryPointCard/moveCard', BuryPointCardController.moveCard);
   router.post('/buryPointCard/getPathPage', BuryPointCardController.getPathPage);
   router.post('/buryPointCard/getPageWidthList', BuryPointCardController.getPageWidthList);
+  router.post('/buryPointCard/getHeatMapPerData', BuryPointCardController.getHeatMapPerStatisticData);
 }
