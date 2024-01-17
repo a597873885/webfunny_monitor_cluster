@@ -71,10 +71,10 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
 
     setTimeout(() => {
         Common.consoleInfo()
-        if (process.env.LOGNAME === "jeffery") {
-            console.log("=====本地服务，不再启动定时器====")
-            return
-        }
+        // if (process.env.LOGNAME === "jeffery") {
+        //     console.log("=====本地服务，不再启动定时器====")
+        //     return
+        // }
         // Common.createTable(0)
         // 数据库里存放的monitor-master-uuid
         let monitorMasterUuidInDb = ""
@@ -153,6 +153,20 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
                 const hourName = tempDate.Format("yyyy-MM-dd hh")
                 // 每分钟更新流量信息
                 TimerCalculateController.saveFlowDataByHour(dayName, hourName)
+            }
+
+            // 每隔1分钟
+            if (minuteTimeStr.substring(3) == "00") {
+                const tempMinuteStr = minuteTimeStr.substring(0, 2)
+                const aliveCountArr = global.monitorInfo.aliveCountForProjectIn5Minutes
+                aliveCountArr.push({
+                    minute: tempMinuteStr,
+                    projectCountInfo: {}
+                })
+                if (aliveCountArr.length > 1) {
+                    aliveCountArr.splice(0, 1)
+                }
+                console.log(aliveCountArr)
             }
 
             // 每隔1分钟的第5秒执行

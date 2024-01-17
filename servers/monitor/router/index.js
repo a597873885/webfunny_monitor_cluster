@@ -24,6 +24,7 @@ global.monitorInfo = {
     logCountInMinute: 0, // 每分钟的日志量
     logCountInMinuteList: [], // 每分钟日志量数组
     projectLogCountList: {}, // 每个项目当天的日志总量
+    aliveCountForProjectIn5Minutes: [], // 内存中记录每个项目5分钟内的活跃量
     errorLogListForLast200: [],  // 存放最近200条报错日志
     purchaseCodeValid: false,
     warningMessageList: [],
