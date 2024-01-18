@@ -1,4 +1,6 @@
 require("./extension")
+const path = require('path')
+const jsonfile = require('jsonfile')
 const crypto = require("crypto")
 const myAtob = require("atob")
 const fetch = require('node-fetch')
@@ -565,6 +567,21 @@ const Utils = {
       tempStartDate = new Date(new Date(tempStartDate).getTime() + 24 * 3600 * 1000).Format("yyyy-MM-dd")
     }
     return days;
+  },
+  /**
+   * 解析json文件
+   */
+  getJsonData() {
+    const basePath = path.resolve(__dirname, "../")
+    const file = basePath + '/package.json'
+    let conf = {}
+    try {
+      conf = jsonfile.readFileSync(file);
+    } catch (error) {
+        console.log('read json config err:', error);
+        throw new Error('解析package.json失败')
+    }
+    return conf
   },
 
   /**
