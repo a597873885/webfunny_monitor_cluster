@@ -110,6 +110,7 @@ const otherConfig = {
     "emailPassword": ""      // 密码
   },
   "protocol": "",            // 内部通讯协议（一般用不上）
+  "segmentUrl": "",          // segment 上报地址，对接skyWalking
   "messageQueue": false,     // 是否开启消息队列
   "openMonitor": true,       // 是否开启可视化页面的监控
   "uploadServerErrorToWebfunny": false, // 是否上报后端错误日志至Webfunny服务（推荐开启，便于排查问题）

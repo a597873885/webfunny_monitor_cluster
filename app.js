@@ -4,7 +4,7 @@ const bodyParser = require('koa-bodyparser')
 const centerRoute = require('./servers/center/router')
 const monitorRoute = require('./servers/monitor/router')
 const eventRoute = require('./servers/event/router')
-// const loggerRoute = require('./servers/logger/router')
+const loggerRoute = require('./servers/logger/router')
 const log = require("./config/log")
 const statusCode = require('./utils/status-code')
 const auth = require('./middlreware/auth')
@@ -66,7 +66,7 @@ app.use(async (ctx, next) => {
 app.use(centerRoute.routes(), centerRoute.allowedMethods())
 app.use(monitorRoute.routes(), monitorRoute.allowedMethods())
 app.use(eventRoute.routes(), eventRoute.allowedMethods())
-// app.use(loggerRoute.routes(), loggerRoute.allowedMethods())
+app.use(loggerRoute.routes(), loggerRoute.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {
