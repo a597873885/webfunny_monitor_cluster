@@ -148,25 +148,17 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
 
 
             // 每个小时的最后一秒执行
-            if (minuteTimeStr == "59:00") {
-                const dayName = tempDate.Format("yyyy-MM-dd")
-                const hourName = tempDate.Format("yyyy-MM-dd hh")
-                // 每分钟更新流量信息
-                TimerCalculateController.saveFlowDataByHour(dayName, hourName)
-            }
+            // if (minuteTimeStr == "59:00") {
+            //     const dayName = tempDate.Format("yyyy-MM-dd")
+            //     const hourName = tempDate.Format("yyyy-MM-dd hh")
+            //     // 每分钟更新流量信息
+            //     TimerCalculateController.saveFlowDataByHour(dayName, hourName)
+            // }
 
             // 每隔1分钟
             if (minuteTimeStr.substring(3) == "00") {
-                const tempMinuteStr = minuteTimeStr.substring(0, 2)
-                const aliveCountArr = global.monitorInfo.aliveCountForProjectIn5Minutes
-                aliveCountArr.push({
-                    minute: tempMinuteStr,
-                    projectCountInfo: {}
-                })
-                if (aliveCountArr.length > 1) {
-                    aliveCountArr.splice(0, 1)
-                }
-                console.log(aliveCountArr)
+                // 每分钟更新活跃流量信息
+                TimerCalculateController.updateAliveCountInfo()
             }
 
             // 每隔1分钟的第5秒执行
