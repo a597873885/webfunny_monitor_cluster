@@ -189,6 +189,12 @@ const Columns = {
       allowNull: true,
       field: 'healthScore'
     },
+    // 活跃人数
+    aliveCount: {
+      type: DataTypes.INT(32),
+      allowNull: true,
+      field: 'aliveCount'
+    },
     // 创建时间
     createdAt: {
       type: DataTypes.DATE_TIME,
