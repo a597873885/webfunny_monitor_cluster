@@ -175,12 +175,11 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
                 if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {
                     TimerCalculateController.calculateCountByDay(minuteTimeStr, -1)
                 }
+            } else if (minuteTimeStr > "06:00" && minuteTimeStr < "12:00") {
+                if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {
+                    TimerCalculateController.calculateCountByDay(minuteTimeStr, 0)
+                }
             }
-            // else if (minuteTimeStr > "06:00" && minuteTimeStr < "12:00") {
-            //     if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {
-            //         TimerCalculateController.calculateCountByDay(minuteTimeStr, 0)
-            //     }
-            // }
             // console.log(minuteTimeStr, monitorMasterUuidInDb, global.monitorInfo.monitorMasterUuid)
             // 每小时的前6分钟，会计算小时数据
             // if (minuteTimeStr > "00:00" && minuteTimeStr < "06:00") {
