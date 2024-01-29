@@ -3,6 +3,12 @@ const moment = require('moment')
 const Columns = {
   tableName: 'PerfInfoByDay',
   structure: {
+    // 监控ID
+    webMonitorId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: 'webMonitorId'
+    },
     // 日志类型
     infoType: {
       type: DataTypes.STRING,
