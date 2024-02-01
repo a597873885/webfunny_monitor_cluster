@@ -165,6 +165,12 @@ const Columns = {
       allowNull: true,
       field: 'recordConfig'
     },
+    // 是否绑定traceId
+    hasTrace: {
+      type: DataTypes.INT(8),
+      allowNull: true,
+      field: 'hasTrace'
+    },
     // 环境变量
     env: {
       type: DataTypes.STRING,
