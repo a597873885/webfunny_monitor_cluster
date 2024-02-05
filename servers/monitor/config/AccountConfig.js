@@ -28,7 +28,7 @@ const accountInfo = {
     batchInsert: otherConfig.business.batchInsert,
 
     mysqlConfig: mysqlConfig.monitor,
-
+    
     segmentUrl: otherConfig.segmentUrl, // segment上报地址，跟skyWalking进行接入
 
     useCusEmailSys: otherConfig.email.useCusEmailSys,                 // 是否开启自定义邮件系统
