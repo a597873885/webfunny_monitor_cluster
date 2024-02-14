@@ -70,6 +70,7 @@ const UPLOAD_TYPE = {
     NEW_COUNT_DAY: "new_count_day",  // 一天的新访客数量
     PV_COUNT_DAY: "pv_count_day",  // 一天的PV数量
     IP_COUNT_DAY: "ip_count_day",  // 一天的IP数量
+    HEALTH_SCORE_DAY: "health_score_day",  // 一天的健康分
 
     DEVICE_COUNT_HOUR: "device_count_hour",  // 每小时的设备数量
     CITY_COUNT_HOUR: "city_count_hour",  // 每小时的城市数量

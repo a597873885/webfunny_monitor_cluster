@@ -68,7 +68,7 @@ module.exports = async () => {
                 // 每10分钟执行一次
                 if (minuteTimeStr.substring(3) == "00") {
                     // 更新每天的流量消耗
-                    ProductController.batchCreateOrUpdateProduct()
+                    // ProductController.batchCreateOrUpdateProduct()
                 }
 
                 // 凌晨0点01分开始创建当天的数据库表

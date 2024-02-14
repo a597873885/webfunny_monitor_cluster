@@ -23,6 +23,8 @@ global.monitorInfo = {
     waitCounts: 40,   // 日志等待上报的时间间隔，可以调整日志上报的密度（40代表8s上报一次）
     logCountInMinute: 0, // 每分钟的日志量
     logCountInMinuteList: [], // 每分钟日志量数组
+    projectLogCountList: {}, // 每个项目当天的日志总量
+    aliveCountForProjectIn5Minutes: [], // 内存中记录每个项目5分钟内的活跃量
     errorLogListForLast200: [],  // 存放最近200条报错日志
     purchaseCodeValid: false,
     warningMessageList: [],
@@ -30,6 +32,7 @@ global.monitorInfo = {
     projectConfigs: {}, // 携带每个项目的配置信息
     alarmInfoList: {}, // 警报信息暂存
     logInfoQueue: {}, // 存放日志队列的对象
+    segmentQueue: [], // segment日志队列
     tokenListInMemory: {}, //内存中的token列表 
     calculateDataInMemory: [], //流式计算相关信息
     calculateFlowData: {}, // 存储流量数据

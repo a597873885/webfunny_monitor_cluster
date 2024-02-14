@@ -71,10 +71,10 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
 
     setTimeout(() => {
         Common.consoleInfo()
-        if (process.env.LOGNAME === "jeffery") {
-            console.log("=====本地服务，不再启动定时器====")
-            return
-        }
+        // if (process.env.LOGNAME === "jeffery") {
+        //     console.log("=====本地服务，不再启动定时器====")
+        //     return
+        // }
         // Common.createTable(0)
         // 数据库里存放的monitor-master-uuid
         let monitorMasterUuidInDb = ""
@@ -148,11 +148,17 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
 
 
             // 每个小时的最后一秒执行
-            if (minuteTimeStr == "59:00") {
-                const dayName = tempDate.Format("yyyy-MM-dd")
-                const hourName = tempDate.Format("yyyy-MM-dd hh")
-                // 每分钟更新流量信息
-                TimerCalculateController.saveFlowDataByHour(dayName, hourName)
+            // if (minuteTimeStr == "59:00") {
+            //     const dayName = tempDate.Format("yyyy-MM-dd")
+            //     const hourName = tempDate.Format("yyyy-MM-dd hh")
+            //     // 每分钟更新流量信息
+            //     TimerCalculateController.saveFlowDataByHour(dayName, hourName)
+            // }
+
+            // 每隔1分钟
+            if (minuteTimeStr.substring(3) == "00") {
+                // 每分钟更新活跃流量信息
+                TimerCalculateController.updateAliveCountInfo()
             }
 
             // 每隔1分钟的第5秒执行
@@ -169,12 +175,11 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
                 if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {
                     TimerCalculateController.calculateCountByDay(minuteTimeStr, -1)
                 }
+            } else if (minuteTimeStr > "06:00" && minuteTimeStr < "12:00") {
+                if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {
+                    TimerCalculateController.calculateCountByDay(minuteTimeStr, 0)
+                }
             }
-            // else if (minuteTimeStr > "06:00" && minuteTimeStr < "12:00") {
-            //     if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {
-            //         TimerCalculateController.calculateCountByDay(minuteTimeStr, 0)
-            //     }
-            // }
             // console.log(minuteTimeStr, monitorMasterUuidInDb, global.monitorInfo.monitorMasterUuid)
             // 每小时的前6分钟，会计算小时数据
             // if (minuteTimeStr > "00:00" && minuteTimeStr < "06:00") {
@@ -195,11 +200,12 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
                 Common.pm2Flush()
             }
             // 凌晨0点01分开始创建当天的数据库表
-            // if (hourTimeStr == "00:00:01") {
-            //     if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {
-            //         Common.createTable(0)
-            //     }
-            // } 
+            if (hourTimeStr == "00:00:01") {
+                // if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {
+                //     Common.createTable(0)
+                // }
+                global.monitorInfo.projectLogCountList = {}
+            } 
             // // 晚上11点55分开始创建第二天的数据库表
             // if (hourTimeStr == "23:55:01") {
             //     if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {

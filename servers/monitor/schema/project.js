@@ -165,6 +165,12 @@ const Columns = {
       allowNull: true,
       field: 'recordConfig'
     },
+    // 是否绑定traceId
+    hasTrace: {
+      type: DataTypes.INT(8),
+      allowNull: true,
+      field: 'hasTrace'
+    },
     // 环境变量
     env: {
       type: DataTypes.STRING,
@@ -188,6 +194,12 @@ const Columns = {
       type: DataTypes.FLOAT(32),
       allowNull: true,
       field: 'healthScore'
+    },
+    // 活跃人数
+    aliveCount: {
+      type: DataTypes.INT(32),
+      allowNull: true,
+      field: 'aliveCount'
     },
     // 创建时间
     createdAt: {

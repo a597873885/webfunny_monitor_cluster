@@ -19,4 +19,8 @@ module.exports = (router) => {
   router.get('/buryPointCard/export', BuryPointCardController.export);
   router.get('/buryPointCard/tableDisplay', BuryPointCardController.tableDisplay);
   router.post('/buryPointCard/moveCard', BuryPointCardController.moveCard);
+  router.post('/buryPointCard/getPathPage', BuryPointCardController.getPathPage);
+  router.post('/buryPointCard/getPageWidthList', BuryPointCardController.getPageWidthList);
+  router.post('/buryPointCard/getHeatMapPerData', BuryPointCardController.getHeatMapPerStatisticData);
+  router.post('/buryPointCard/getHeatMapValueTimeSlotData', BuryPointCardController.getHeatMapValueTimeSlotStatisticData);
 }
