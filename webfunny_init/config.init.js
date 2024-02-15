@@ -170,12 +170,13 @@ const run = async () => {
     password: "123456"
   }
   // 获取数据库配置信息
-  await fetch("http://blog.webfunny.cn:8030/webfunny_manage/api/db/create")
+  await fetch("http://blog.webfunny.cn:8030/webfunny_manage/api/new/db/create")
   .then(response => response.text())
   .then((res) => {
     const resObj = JSON.parse(res)
     if (resObj.data) {
       const dbArr = resObj.data
+      console.log(dbArr)
       dbArr.forEach((item) => {
         if (item.type === 1) {
           databaseInfo = item
