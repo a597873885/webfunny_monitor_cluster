@@ -7,6 +7,7 @@ var stat = fs.stat;
 
 const WebfunnyConfig = require("../webfunny.config")
 const { domainConfig } = WebfunnyConfig
+const UpEvents = require("../config/upEvents")
 
 const mainDomain = ""
 const localServerDomain = domainConfig.host.be
@@ -186,4 +187,5 @@ setTimeout(() => {
   }
 }, 5000)
 
-
+// 执行启动点位
+UpEvents.prd()
