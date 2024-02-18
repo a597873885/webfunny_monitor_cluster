@@ -3,7 +3,7 @@ const fetch = require('node-fetch')
 const path = require('path')
 const rootPath = path.resolve(__dirname, "..")
 // 初始化bin目录
-const setVariableInfo = (databaseInfo, inputPurchaseCode) => {
+const setVariableInfo = (databaseInfo, clickHouseDatabaseInfo, inputPurchaseCode) => {
   const variableJsonPath = rootPath + "/webfunny.config/index.js"
   fs.readFile(variableJsonPath, "", (err) => {
     if (err) {
@@ -67,22 +67,22 @@ const mysqlConfig = {
   // 监控（Clickhouse）
   "monitor": {
     "write": {
-      "ip": "",
-      "port": "",
-      "dataBaseName": "",
-      "userName": "",
-      "password": ""
+      "ip": "${clickHouseDatabaseInfo.ip}",
+      "port": "${clickHouseDatabaseInfo.port}",
+      "dataBaseName": "${clickHouseDatabaseInfo.dataBaseName}",
+      "userName": "${clickHouseDatabaseInfo.userName}",
+      "password": "${clickHouseDatabaseInfo.password}"
     },
     "read": []
   },
   // 埋点（Clickhouse）
   "event": {
     "write": {
-      "ip": "",
-      "port": "",
-      "dataBaseName": "",
-      "userName": "",
-      "password": ""
+      "ip": "${clickHouseDatabaseInfo.ip}",
+      "port": "${clickHouseDatabaseInfo.port}",
+      "dataBaseName": "${clickHouseDatabaseInfo.dataBaseName}",
+      "userName": "${clickHouseDatabaseInfo.userName}",
+      "password": "${clickHouseDatabaseInfo.password}"
     },
     "read": []
   },
@@ -158,18 +158,32 @@ const run = async () => {
   let databaseInfo = {
     ip: "localhost",
     port: "3306",
-    dataBaseName: "demo_db",
+    dataBaseName: "mysql_demo_db",
+    userName: "root",
+    password: "123456"
+  }
+  let clickHouseDatabaseInfo = {
+    ip: "localhost",
+    port: "3306",
+    dataBaseName: "clickhouse_demo_db",
     userName: "root",
     password: "123456"
   }
   // 获取数据库配置信息
-  await fetch("http://blog.webfunny.cn:8030/webfunny_manage/api/db/create")
+  await fetch("http://blog.webfunny.cn:8030/webfunny_manage/api/new/db/create")
   .then(response => response.text())
   .then((res) => {
     const resObj = JSON.parse(res)
     if (resObj.data) {
-    //   setVariableInfo(resObj.data)
-      databaseInfo = resObj.data
+      const dbArr = resObj.data
+      console.log(dbArr)
+      dbArr.forEach((item) => {
+        if (item.type === 1) {
+          databaseInfo = item
+        } else if (item.type === 2) {
+          clickHouseDatabaseInfo = item
+        }
+      })
     } else {
       console.log("测试数据库生成失败，请自行填写数据库配置")
     //   setVariableInfo(databaseInfo)
@@ -188,7 +202,7 @@ const run = async () => {
   }).catch((e) => {
     console.log("webfunny启动失败了，原因可能有两种：".red)
     console.log("1. 网络异常，执行重启命令试一下$: npm run restart".red)
-    console.log("2. 贵公司的环境无法访问外部网络，无法获取授权码，请联系我们解决，微信号：webfunny2、webfunny_2020 ".red)
+    console.log("2. 贵公司的环境无法访问外部网络，无法获取授权码，请联系我们解决，微信号：webfunny2".red)
   })
 
   fs.mkdir( rootPath + "/webfunny.config", function(err){
@@ -197,7 +211,7 @@ const run = async () => {
     } else {
       console.log(`= 创建文件夹 ${rootPath}/webfunny.config`)
     }
-    setVariableInfo(databaseInfo, inputPurchaseCode)
+    setVariableInfo(databaseInfo, clickHouseDatabaseInfo, inputPurchaseCode)
   })
 }
 
