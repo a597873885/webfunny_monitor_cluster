@@ -4,7 +4,7 @@ module.exports = [
     "/registerForAdmin", "/sendRegisterEmail", "/resetPwd", "/upBp", "/uploadMapFile",
     "/checkSsoToken", "/loginForApi", "/registerForApi", "/createNewTeamForApi", "/createNewProjectForApi",
     "/projectSimpleListByWebmonitorIds", "/addViewers",
-    "/monitorBaseInfo", "/storeTokenToMemory", "getJavascriptErrorStackCodeForSource",
+    "/monitorBaseInfo", "/storeTokenToMemory", "/getJavascriptErrorStackCodeForSource", "/project/list/all",
     
     // center
     "/hasSuperAdminAccount", "/getValidateCode", "/refreshValidateCode", "/login", "/register",
