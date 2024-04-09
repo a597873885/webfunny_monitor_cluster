@@ -31,10 +31,6 @@ module.exports = async () => {
 
         // 初始化登录验证码
         UserController.setValidateCode()
-        // 初始化监控系统的域名配置信息
-        ApplicationConfigController.setInitSysConfigInfo("localhost:8011", "localhost:8010", "monitor")
-        // 初始化埋点系统的域名配置信息
-        ApplicationConfigController.setInitSysConfigInfo("localhost:8015", "localhost:8014", "event")
 
         CommonTableController.createTable(0)
         const startTime = new Date().getTime();
@@ -52,34 +48,16 @@ module.exports = async () => {
             const minuteTimeStr = tempDate.Format("mm:ss")
             try {
 
-                // 测试，每个分钟执行一次
-                // if (minuteTimeStr.substring(3) == "00") {
+                // 每个小时的第一分钟开始执行
+                // if (minuteTimeStr == "01:00") {
                 //     // 更新每天的流量消耗
-                //     console.log("===================开始计算")
                 //     TimerCalculateController.calculateCountByDay(0)
                 // }
-
-                // 每个小时的第一分钟开始执行
-                if (minuteTimeStr == "01:00") {
-                    // 更新每天的流量消耗
-                    TimerCalculateController.calculateCountByDay(0)
+                
+                // 每个小时更新两次流量信息
+                if (minuteTimeStr == "20:00" || minuteTimeStr == "50:00") {
+                    TimerCalculateController.updateCompanyData()
                 }
-
-                // 每10分钟执行一次
-                if (minuteTimeStr.substring(3) == "00") {
-                    // 更新每天的流量消耗
-                    // ProductController.batchCreateOrUpdateProduct()
-                }
-
-                // 凌晨0点01分开始创建当天的数据库表
-                if (hourTimeStr == "00:00:01") {
-                    CommonTableController.createTable(0)
-                }
-                // 晚上11点55分开始创建第二天的数据库表
-                if (hourTimeStr == "23:55:01") {
-                    CommonTableController.createTable(1)
-                }
-
 
                 // 凌晨0点01分开始创建当天的数据库表
                 if (hourTimeStr == "00:00:01") {
