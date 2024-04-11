@@ -23,12 +23,14 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
         setTimeout(() => {
             console.log("启动监控项目列表：", JSON.stringify(global.monitorInfo.cacheWebMonitorIdList))
         }, 10000)
-        // 更新流量上限信息
-        TimerCalculateController.checkLimitForCloud()
-        
         // 将项目的webMonitorId列表放入全局变量，并放入bin/webMonitorIdList.js文件中
         // Common.setStopWebMonitorIdList()
     }, 3000)
+
+    setTimeout(() => {
+        // 更新流量上限信息
+        TimerCalculateController.checkLimitForCloud()
+    }, 25 * 1000)
     /**
      * 2秒后开始进行第一次分析
      * */

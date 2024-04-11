@@ -21,6 +21,11 @@ module.exports = async () => {
         console.log("webfunny基座应用启动成功！".yellow)
         console.log("")
 
+        setTimeout(() => {
+            // 更新流量上限信息
+            TimerCalculateController.updateCompanyData()
+        }, 20 * 1000)
+
         // 服务器启动记录打点
         Utils.postPoint("http://monitor.webfunny.cn/tracker/upEvent", { data: JSON.stringify({
             pointId: "11",
@@ -31,6 +36,7 @@ module.exports = async () => {
 
         // 初始化登录验证码
         UserController.setValidateCode()
+        
 
         CommonTableController.createTable(0)
         const startTime = new Date().getTime();
