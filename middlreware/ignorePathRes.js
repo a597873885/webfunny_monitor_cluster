@@ -4,7 +4,8 @@ module.exports = [
     "/registerForAdmin", "/sendRegisterEmail", "/resetPwd", "/upBp", "/uploadMapFile",
     "/checkSsoToken", "/loginForApi", "/registerForApi", "/createNewTeamForApi", "/createNewProjectForApi",
     "/projectSimpleListByWebmonitorIds", "/addViewers", "/otel/trace", "/project/list/all", "/getAllProjectWithCompanyId",
-    "/monitorBaseInfo", "/storeTokenToMemory", "getJavascriptErrorStackCodeForSource", 
+    "/monitorBaseInfo", "/storeTokenToMemory", "getJavascriptErrorStackCodeForSource",
+    "/wfMonitor/walkingfunny/getProjectBaseCountInfo", "/wfMonitor/getConcurrencyByMinuteInHour",
     
     // center
     "/hasSuperAdminAccount", "/getValidateCode", "/refreshValidateCode", "/login", "/register",
