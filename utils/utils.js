@@ -34,7 +34,13 @@ const Utils = {
     }
     return macAddress
   },
-  handleDateResult: function(result, scope = 30, endDate = new Date().Format("yyyy-MM-dd 00:00:00")) {
+  postPoint(url, params = {}, httpCustomerOperation = { isHandleResult: true }) {
+    const method = "POST"
+    const body = JSON.stringify(params)
+    const fetchParams = Object.assign({}, { method, body}, Utils.getHeadersJson())
+    return Utils.handleFetchData(url, fetchParams, httpCustomerOperation)
+  },
+  handleDateResult: function(result, scope = 30) {
     function addDate(date, days) {
       var d=new Date(date);
       d.setDate(d.getDate()+days);
@@ -47,8 +53,8 @@ const Utils = {
     }
     var newResult = [];
     for (var i = 0; i < scope; i ++) {
-      var tempDate = addDate(new Date(endDate), -i);
-      var tempObj = {day: tempDate.substring(5, 10), count: 0, loadTime: 0, date: tempDate};
+      var tempDate = addDate(new Date(), -i);
+      var tempObj = {day: tempDate.substring(5, 10), count: 0, loadTime: 0};
       for (var j = 0; j < result.length; j ++) {
         if (tempDate === result[j].day) {
           tempObj.count = result[j].count;
@@ -59,59 +65,6 @@ const Utils = {
       newResult.push(tempObj);
     }
     return newResult.reverse();
-  },
-  handleHourResult: function(result, day = 0) {
-    const dayStr = Utils.addDays(0 - day).substring(5)
-    const newResult = []
-    for (let i = 0; i < 24; i ++) {
-      let hourStr = ""
-      if (i < 10) {
-        hourStr = "0" + i
-      } else {
-        hourStr = "" + i
-      }
-      const tempHour = dayStr + " " + hourStr
-      const resArray = result.filter((item) => {
-        return item.hour === tempHour
-      })
-      if (resArray.length && tempHour === resArray[0].hour) {
-        const hourStr = resArray[0].hour.split(" ")[1] + ":00"
-        newResult.push({
-          hour: hourStr,
-          count: resArray[0].count
-        })
-      } else {
-        const hourStr = tempHour.split(" ")[1] + ":00"
-        newResult.push({
-          hour: hourStr,
-          count: 0
-        })
-      }
-    }
-    
-    return newResult
-  },
-  handleMinuteResult: function(result, hourName) {
-    const newResult = []
-    for (let i = 0; i < 60; i ++) {
-      const tempMinute = hourName + ":" + (i < 10 ? "0" + i : i + "")
-      const resArray = result.filter((item) => {
-        return item.minutes === tempMinute
-      })
-      if (resArray.length && tempMinute === resArray[0].minutes) {
-        newResult.push({
-          minutes: resArray[0].minutes.substring(11, 16),
-          count: resArray[0].count
-        })
-      } else {
-        newResult.push({
-          minutes: tempMinute.substring(11, 16),
-          count: 0
-        })
-      }
-    }
-    
-    return newResult
   },
   addDays: function(dayIn) {
     var CurrentDate
@@ -171,7 +124,7 @@ const Utils = {
       let temp = result
       if (len > 1) {
         for (; i < len - 1; i++) {
-          if (!temp[splitting[i]] || !this.isObject(temp[splitting[i]])) temp[splitting[i]] = {}
+          if (!temp[splitting[i]] || !Utils.isObject(temp[splitting[i]])) temp[splitting[i]] = {}
           temp = temp[splitting[i]]
         }
       }
@@ -198,9 +151,6 @@ const Utils = {
   },
   b64EncodeUnicode: function(tempStr) {
     const str = encodeURIComponent(tempStr)
-    // return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-    //   return String.fromCharCode("0x" + p1)
-    // }))
     return base64encode(str)
   },
   b64DecodeUnicode: function(str) {
@@ -239,8 +189,8 @@ const Utils = {
       return encryptString
     }
   },
-  setTableName(name) {
-    return name + new Date().Format("yyyyMMdd")
+  setTableName(name, day) {
+    return name + new Date(new Date().getTime() + (86400000 * (day))).Format("yyyyMMdd")
   },
   setTableNameList(name) {
     const timeStamp = new Date().getTime()
@@ -286,7 +236,7 @@ const Utils = {
       const start = tempDes.split(".")[0]
       let end = tempDes.split(".")[1]
       if (end.length > s) {
-        end = end.substring(0, 2)
+        end = end.substring(0, s)
       }
       finalDes = start + "." + end
     }
@@ -295,32 +245,26 @@ const Utils = {
   get(url, params = {}, httpCustomerOperation = { isHandleResult: true }) {
     const method = "GET"
     const fetchUrl = url + Utils.qs(params)
-    const fetchParams = Object.assign({}, { method }, this.getHeaders())
+    const fetchParams = Object.assign({}, { method }, Utils.getHeaders())
     return Utils.handleFetchData(fetchUrl, fetchParams, httpCustomerOperation)
   },
   post(url, params = {}, httpCustomerOperation = { isHandleResult: true }) {
     const method = "POST"
     const body = JSON.stringify(params)
-    const fetchParams = Object.assign({}, { method, body }, this.getHeaders())
+    const fetchParams = Object.assign({}, { method, body }, Utils.getHeaders())
     return Utils.handleFetchData(url, fetchParams, httpCustomerOperation)
   },
   getJson(url, params = {}, httpCustomerOperation = { isHandleResult: true }) {
     const method = "GET"
     const fetchUrl = url + Utils.qs(params)
-    const fetchParams = Object.assign({}, { method }, this.getHeadersJson())
+    const fetchParams = Object.assign({}, { method }, Utils.getHeadersJson())
     return Utils.handleFetchData(fetchUrl, fetchParams, httpCustomerOperation)
   },
   postJson(url, params = {}, httpCustomerOperation = { isHandleResult: true }) {
     if (!url) return null
     const method = "POST"
     const body = JSON.stringify(params)
-    const fetchParams = Object.assign({}, { method, body }, this.getHeadersJson())
-    return Utils.handleFetchData(url, fetchParams, httpCustomerOperation)
-  },
-  postPoint(url, params = {}, httpCustomerOperation = { isHandleResult: true }) {
-    const method = "POST"
-    const body = JSON.stringify(params)
-    const fetchParams = Object.assign({}, { method, body}, this.getHeadersJson())
+    const fetchParams = Object.assign({}, { method, body }, Utils.getHeadersJson())
     return Utils.handleFetchData(url, fetchParams, httpCustomerOperation)
   },
   handleFetchData(fetchUrl, fetchParams, httpCustomerOperation) {
@@ -406,36 +350,20 @@ const Utils = {
     return Object.assign({}, { headers })
   },
   /**
-   * img上报日志转JOSN
-   *
-   */
-  logParseImgData(queryStr) {
-    if (!queryStr) return []
-    const tempLogArray = queryStr.split("$$$")
-    const logArray = []
-    tempLogArray.forEach((item) => {
-      if (item) {
-        try {
-          logArray.push(item)
-        } catch(e) {
-        }
-      }
-    })
-    return logArray
-  },
-  /**
    * 日志转JOSN
    *
    */
-  logParseJson(data) {
-    if (!data) return []
-    const paramStr = data.replace(/": Script error\./g, "script error").replace(/undefined\{/g, "{")
-    const param = JSON.parse(paramStr)
-    const { logInfo } = param
-    if (!logInfo) {
-      return []
+  logParseJson(dataStr) {
+    // 如果数据为空，或者已经是对象，则原路返回
+    if (!dataStr || typeof dataStr === "object") return dataStr
+    let finalRes = ""
+    try {
+      finalRes = JSON.parse(dataStr)
+    } catch(e) {
+      log.printError("上报日志转JSON报错",e)
+      finalRes = dataStr
     }
-    return logInfo.split("$$$")
+    return finalRes
   },
 
   /**
@@ -481,37 +409,6 @@ const Utils = {
     }
     return timeSql
   },
-  /**
-   * 处理time scope Sql
-   */
-  handleTimeScopeSql(timeSize, scope) {
-    const oneDayTime = 24 * 3600 * 1000
-    timeSize = parseInt(timeSize, 10)
-    scope = parseInt(scope, 10) - 1
-    const nowTime = new Date().getTime() - scope * oneDayTime
-    const startTime = nowTime + (timeSize - 1) * oneDayTime
-    const endTime = nowTime + (timeSize) * oneDayTime
-    let startHour = new Date(startTime).Format("yyyy-MM-dd hh:00:00")
-    let endHour = new Date(endTime).Format("yyyy-MM-dd hh:59:59")
-    let timeSql = " happenDate>='" + startHour + "' and happenDate<='" + endHour + "' "
-    if (timeSize > 0) {
-      const startHour = new Date(startTime + oneDayTime).Format("yyyy-MM-dd hh:00:00")
-      const endHour = new Date(endTime + oneDayTime).Format("yyyy-MM-dd hh:59:59")
-      timeSql = " happenDate>='" + startHour + "' and happenDate<='" + endHour + "' "
-    }
-    return timeSql
-  },
-
-  /**
-   * 处理whole day Sql
-   */
-  handleWholeDaySql(timeSize) {
-    const useDay = Utils.addDays(timeSize)
-    let startDay = useDay + " 00:00:00"
-    let endDay = useDay + " 23:59:59"
-    let timeSql = " happenDate>='" + startDay + "' and happenDate<='" + endDay + "' "
-    return timeSql
-  },
 
   /**
    * 时间按照分钟每隔切分，返回时间list
@@ -532,73 +429,328 @@ const Utils = {
     }
     return temp;
   },
+
   /**
-   * 获取一天所有的分钟
+   * 时间按照每天每隔切分，返回时间list
+   * 开始时间：startDate
+   * 结束时间：endDate
+   * 分钟：amount
    */
-  getAllMinutesForDay(day) {
-    let minutes = []
-    let start = new Date(day + " 00:00:00").getTime()
-    for (let i = 0; i < 1440; i ++) {
-      minutes.push(new Date(start + i * 60 * 1000).Format("hh:mm"))
+  splitDate(startDate, endDate) {
+    var startTime = new Date(startDate),
+     endTime = new Date(endDate);
+    var difftime = (endTime - startTime)/1000; //计算时间差,并把毫秒转换成秒
+    var days = parseInt(difftime/86400); // 天  24*60*60*1000
+    var temp = [];
+    for (var i = 0; i < days; i++) {
+      startTime.setMilliseconds(startTime.getMilliseconds() + 24 * 60 * 60 * 1000);
+      temp[i] = new Date(startTime.getTime());
+      temp[i] = temp[i].Format("MM-dd")  //分割天
+      // console.log(temp[i].format('hh:mm'))
     }
-    return minutes;
-  },
-  /**
-   * 获取时间范围内所有的小时
-   */
-  getAllHoursForDay(startTime, endTime) {
-    const hourCount = (endTime - startTime) / (3600 * 1000)
-    let hours = []
-    for (let i = 0; i <= hourCount; i ++) {
-      hours.push(new Date(startTime + i * 3600 * 1000).Format("yyyy-MM-dd hh"))
-    }
-    return hours;
-  },
-  /**
-   * 获取时间范围内所有的日期
-   */
-  getAllDayForScope(startDate, endDate) {
-    if (startDate === endDate) return [startDate]
-    if (startDate > endDate) return []
-    let days = []
-    let tempStartDate = startDate
-    while(tempStartDate <= endDate) {
-      days.push(tempStartDate)
-      tempStartDate = new Date(new Date(tempStartDate).getTime() + 24 * 3600 * 1000).Format("yyyy-MM-dd")
-    }
-    return days;
-  },
-  /**
-   * 解析json文件
-   */
-  getJsonData() {
-    const basePath = path.resolve(__dirname, "../")
-    const file = basePath + '/package.json'
-    let conf = {}
-    try {
-      conf = jsonfile.readFileSync(file);
-    } catch (error) {
-        console.log('read json config err:', error);
-        throw new Error('解析package.json失败')
-    }
-    return conf
+    return temp;
   },
 
   /**
-   * 通过webfunny系统发送邮件
+   * 时间按照每天每隔切分，返回时间list
+   * 开始时间：startDate
+   * 结束时间：endDate
+   * 分钟：amount
+   * 返回：['2024-04-14','2024-04-15']
    */
-  sendWfEmail: (email, title, content) => {
-    fetch("http://www.webfunny.cn/config/sendEmail",
-      {
-        method: "POST", 
-        body: JSON.stringify({email, title, content}),
-        headers: {
-            "Content-Type": "application/json;charset=utf-8"
-        }
-    }).catch((e) => {
-      console.log(e)
-    })
+  splitYMDDate(startDate, endDate) {
+    var startTime = new Date(startDate),
+     endTime = new Date(endDate);
+    var difftime = (endTime - startTime)/1000; //计算时间差,并把毫秒转换成秒
+    var days = parseInt(difftime/86400); // 天  24*60*60*1000
+    var temp = [];
+    for (var i = 0; i < days; i++) {
+      startTime.setMilliseconds(startTime.getMilliseconds() + 24 * 60 * 60 * 1000);
+      temp[i] = new Date(startTime.getTime());
+      temp[i] = temp[i].Format("yyyy-MM-dd")  //分割天
+    }
+    return temp;
   },
+
+  /**
+   * 时间按照每天每隔切分，返回时间倒序list
+   * 开始时间：startDate 2024-04-13
+   * 结束时间：endDate 2024-04-15
+   * 分钟：amount
+   * 返回：['04-15','04-14']
+   */
+  splitDescDate(startDate, endDate) {
+    var endTime= new Date(startDate),
+    startTime = new Date(endDate);
+    var difftime = (startTime - endTime)/1000; //计算时间差,并把毫秒转换成秒
+    var days = parseInt(difftime/86400); // 天  24*60*60*1000
+    startTime.setMilliseconds(startTime.getMilliseconds() + 24 * 60 * 60 * 1000);
+    var temp = [];
+    for (var i = 0; i < days; i++) {
+      startTime.setMilliseconds(startTime.getMilliseconds() - 24 * 60 * 60 * 1000);
+      temp[i] = new Date(startTime.getTime());
+      temp[i] = temp[i].Format("MM-dd")  //分割天
+      // console.log(temp[i].format('hh:mm'))
+    }
+    return temp;
+  },
+
+  /**
+   * 中文转符号
+   * 大于等于转 >=
+   */
+  convertOper(str) {
+    let newStr;
+    switch(str) {
+      // case "有值":
+      //   newStr = "is not null"
+      // break 
+      // case "没值":
+      //   newStr = "is null"
+      // break
+      case "为空":
+        newStr = "is null"
+      break
+      case "不为空":
+        newStr = "is not null"
+      break
+      case "包含":
+        newStr = "in"
+      break
+      case "不包含":
+        newStr = "not in"
+      break
+      case "区间":
+        newStr = ""
+      break
+      case "大于":
+        newStr = ">"
+      break
+      case "大于等于":
+        newStr = ">="
+      break
+      case "小于":
+        newStr = "<"
+      break
+      case "小于等于":
+        newStr = "<="
+      break
+      case "等于":
+        newStr = "="
+      break
+      case "不等于":
+        newStr = "!="
+      break
+      case "归类":
+        newStr = "group by"
+      break
+      default:
+        break
+    }
+    return newStr;
+  },
+
+  /**
+   * 中文转符号，生成sql
+   * 大于等于转 >=
+   */
+  convertOperationSql(fieldName, rule, valueStr) {
+    let str = rule
+    let tempValueStr = ""
+    if (rule === "包含" || rule === "不包含" ) {
+      let valArray = valueStr.split(",")
+      let valInStr = ""
+      valArray.forEach((val) => {
+        if(rule === "包含"){
+          valInStr += ` ${fieldName} like '%${val}%' or `
+        }else if(rule === "不包含"){
+          valInStr += ` ${fieldName} not like '%${val}%' and`
+        }
+      })
+      if (valInStr.length > 0) {
+        valInStr = valInStr.substring(0, valInStr.length - 3)//去掉最后一个or或者and
+      }
+      tempValueStr = ` (${valInStr}) `
+    } else {
+        tempValueStr = "'" + valueStr + "' "
+    }
+    let valueStrSql = valueStr ? tempValueStr : ""
+
+    let newStr;
+    let sql = ""
+    switch(str) {
+      case "为空":
+        newStr = " is null "
+        sql = ` (${fieldName} ${newStr} or ${fieldName}='') `
+      break
+      case "不为空":
+        newStr = " is not null "
+        sql = ` (${fieldName} ${newStr} and ${fieldName}!='') `
+      break
+      case "包含":
+        // newStr = " like "
+        // sql = ` ${fieldName} ${newStr} ${valueStrSql}`
+        sql = ` ${valueStrSql}`
+      break
+      case "不包含":
+        // newStr = " not like "
+        // sql = ` ${fieldName} ${newStr} ${valueStrSql}`
+        sql = ` ${valueStrSql}`
+      break
+      case "区间":
+        newStr = ""
+      break
+      case "大于":
+        newStr = ">"
+        sql = ` ${fieldName} ${newStr} ${valueStrSql}`
+      break
+      case "大于等于":
+        newStr = ">="
+        sql = ` ${fieldName} ${newStr} ${valueStrSql}`
+      break
+      case "小于":
+        newStr = "<"
+        sql = ` ${fieldName} ${newStr} ${valueStrSql}`
+      break
+      case "小于等于":
+        newStr = "<="
+        sql = ` ${fieldName} ${newStr} ${valueStrSql}`
+      break
+      case "等于":
+        newStr = "="
+        sql = ` ${fieldName} ${newStr} ${valueStrSql}`
+      break
+      case "不等于":
+        newStr = "!="
+        sql = ` ${fieldName} ${newStr} ${valueStrSql}`
+      break
+      case "归类":
+        newStr = "group by"
+        sql = ` ${fieldName} ${newStr} ${valueStrSql}`
+      break
+      case "模糊匹配":
+        newStr = "like"
+        sql = ` ${fieldName} ${newStr} %${valueStrSql}%`
+      break
+      default:
+        break
+    }
+    console.log(sql)
+    return sql
+  },
+
+  /**
+   * 字段类型转换
+   * String , Number
+   */
+  convertFieldType(str) {
+    let newStr;
+    switch(str) {
+      case "VARCHAR":
+      case "varchar":
+        newStr = "String"
+        break
+      case "INT":
+      case "int":
+      case "BIGINT":
+      case "bigint":
+      case "FLOAT":
+      case "float":
+        newStr = "Number"
+        break
+      default:
+        break
+    }
+    return newStr;
+  },
+
+   /**
+   * 字段类型转换
+   * String , Number
+   */
+  convertFieldTypeToChinese(str) {
+    let newStr;
+    switch(str) {
+      case "VARCHAR":
+      case "varchar":
+        newStr = "文本"
+        break
+      case "INT":
+      case "int":
+      case "BIGINT":
+      case "bigint":
+        newStr = "整数"
+        break
+      case "FLOAT":
+      case "float":
+        newStr = "小数"
+        break
+      default:
+        break
+    }
+    return newStr;
+  },
+
+   /**
+   * 且或转换
+   * String , Number
+   */
+  convertAndOr(str) {
+    let newStr;
+    switch(str) {
+      case "a":
+        newStr = "and"
+        break
+      case "o":
+        newStr = "or"
+        break
+      default:
+        newStr = "and"
+        break
+    }
+    return newStr;
+  },
+  checkFieldNameValid(fieldName){
+    // let goOnFlag = true;
+   //通用字段：id,weFirstStepDay,weHapppenHour,weHapppenMinute,weCustomerKey,weUserId,weSysVersion,weCity,weCountry,weSimpleUrl,weBrowser,weOs,weDeviceSize,createdAt
+   //通用字段：id,weCustomerKey,weUserId,weSimpleUrl,createdAt
+   //weFirstStepDay_1,weFirstStepDay_2,weFirstStepDay_3,weFirstStepDay_4,
+   //weFirstStepDay_5,weFirstStepDay_6,weFirstStepDay_7,weFirstStepDay_8,
+   //weFirstStepDay_9,weFirstStepDay_10
+    const fieldParams = ["id","wefirststepday_1","wefirststepday_2","wefirststepday_3","wefirststepday_4",
+    "wefirstStepday_5","wefirststepday_6","wefirstStepday_7","wefirststepday_8","wefirstStepday_9","wefirststepday_10",
+    "wecustomerkey","weuserid","weip","weos","wepath","wedevicename","weplatform","wesystem","webrowsername","wenewstatus","wecountry","weprovince","wecity","createdat"]
+    const fieldNameConvert = fieldName.toString().toLowerCase()
+    //存在一样的返回false
+    return fieldParams.indexOf(fieldNameConvert)===-1;
+    // fieldParams.forEach((item) => {
+    //     if (fieldNameConvert === item) {
+    //         goOnFlag = false
+    //     }
+    // })
+    // return goOnFlag;
+  },
+
+  /**
+   * 自己配置邮箱，bin/useCusEmailSys.js 参数改为true
+   */
+  // sendEmail: (email, subject, html, user, pass) => {
+  //   const company = "webfunny.cn"
+  //   let transporter = nodemailer.createTransport({
+  //     host: "smtp.163.com",
+  //     port: 465,
+  //     secure: true, // true for 465, false for other ports
+  //     auth: { user,pass }
+  //   });
+  //   // send mail with defined transport object
+  //   transporter.sendMail({
+  //     from: "'" + company + "' <" + user + ">", // sender address
+  //     to: email, // list of receivers
+  //     subject: subject, // Subject line
+  //     text: html, // plain text body
+  //     html: html // html body
+  //   });
+  // },
   getUuid() {
     return uuid.v1()
   },
@@ -619,12 +771,43 @@ const Utils = {
       console.log(error.msg)
     })
   },
+  pinYinToHump(pinyin){
+    let fieldName = '';
+    //TODO 如果是含有数字1、2这种，转成英文数字one、two...
+    //1、"用户id"转成拼音yong_hu_id;
+    //如果是英文，就会全都转成小写了，例如输入userName变成了username
+    //如果是英文，就直接返回，不处理
+    if((/^[A-Za-z]+$/.test(pinyin))){
+      return pinyin;
+    }
+    let fieldNamePinyin = slugify(pinyin);
+    if (fieldNamePinyin === 'show' || fieldNamePinyin === 'SHOW' ){
+      fieldName = 'newShow';
+      return fieldName; 
+    }
+    //2、按-分割
+    let fieldNameArr = fieldNamePinyin.split("-");
+    if(fieldNameArr.length > 1){
+        fieldName = fieldName + fieldNameArr[0];
+        for(let i=1;i<fieldNameArr.length;i++){
+            //3、找到第一个字母转大写，然后拼接上
+            let firstNameInfo = fieldNameArr[i].substr(0,1).toUpperCase();
+            let secondNameInfo = fieldNameArr[i].substr(1,fieldNameArr[i].length);
+            fieldName = fieldName + firstNameInfo + secondNameInfo;
+        }
+    }else {
+        fieldName = fieldNamePinyin;
+    }
+    return fieldName;
+  },
   // 获取双协议结果
-  async requestForTwoProtocol(method = "post", url, param) {
+  async requestForTwoProtocol(method = "post", originUrl, param) {
+    // 先将url中的协议去掉
+    const url = originUrl.replace("https://", "").replace("http://", "")
     const methodName = method === "post" ? "postJson" : ""
     
-    if (otherConfig.protocol) {
-      let reqProtocol = `${otherConfig.protocol}://`
+    if (accountInfo.protocol) {
+      let reqProtocol = `${accountInfo.protocol}://`
       // 如果用户指定了协议
       const protocolRes = await Utils[methodName](`${reqProtocol}${url}`, param).catch((e) => {
         if (typeof e === "object") {
@@ -651,30 +834,55 @@ const Utils = {
       return protocolRes
     }
   },
-  // 根据ip获取地理位置
-  async analysisIp(monitorIp) {
-    let ipInfo = {
-      country: "未知",
-      province: "未知",
-      city: "未知",
-      operators: "未知"
+  equalsObj(oldData,newData){
+    // 类型为基本类型时,如果相同,则返回true
+    if(oldData === newData) return true;
+    if(Utils.isObject(oldData)&&Utils.isObject(newData)&&Object.keys(oldData).length === Object.keys(newData).length){
+        // 类型为对象并且元素个数相同
+
+        // 遍历所有对象中所有属性,判断元素是否相同
+        for (const key in oldData) {
+            if (oldData.hasOwnProperty(key)) {
+                if(!Utils.equalsObj(oldData[key],newData[key]))
+                    // 对象中具有不相同属性 返回false
+                    return false;
+            }
+        }
+    }else if(Utils.isArray(oldData)&&Utils.isArray(oldData)&&oldData.length===newData.length){
+        // 类型为数组并且数组长度相同
+
+        for (let i = 0,length=oldData.length; i <length; i++) {
+            if(!Utils.equalsObj(oldData[i],newData[i]))
+            // 如果数组元素中具有不相同元素,返回false
+            return false;
+        }
+    }else{
+        // 其它类型,均返回false
+        return false;
     }
-    if (!monitorIp) return ipInfo;
-    
-    try {
-      const res = await searcher.btreeSearchSync(monitorIp)
-      if (res) {
-          const { region } = res
-          const locationArray = region.split("|")
-          ipInfo.country = locationArray.length > 0 ? locationArray[0] || "未知" : "未知"
-          ipInfo.province = locationArray.length > 1 ? locationArray[2] || "未知" : "未知"
-          ipInfo.city = locationArray.length > 2 ? locationArray[3] || "未知" : "未知"
-          ipInfo.operators = locationArray.length > 3 ? locationArray[4] || "未知" : "未知"
-      }
-    } catch(e) {
-        log.printError("IP定位失败：", monitorIp)
-    }
-    return ipInfo
+    // 走到这里,说明数组或者对象中所有元素都相同,返回true
+    return true;
+  },
+  //比较list
+  getArrDifference : (arr1, arr2) => {
+    return arr1.concat(arr2).filter((v, i, arr) => {
+      return arr.indexOf(v) === arr.lastIndexOf(v);
+    })
+  },
+  /**
+   * 通过webfunny系统发送邮件
+   */
+  sendWfEmail: (email, title, content) => {
+    fetch("http://www.webfunny.cn/config/sendEmail",
+      {
+        method: "POST", 
+        body: JSON.stringify({email, title, content}),
+        headers: {
+            "Content-Type": "application/json;charset=utf-8"
+        }
+    }).catch((e) => {
+      console.log(e)
+    })
   },
 }
 

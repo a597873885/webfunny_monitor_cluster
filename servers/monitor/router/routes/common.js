@@ -113,4 +113,9 @@ module.exports = (router) => {
   * 获取所有数据库表名
   */
  router.get('/getAllTableList', Common.getAllTableList);
+
+  /**
+  * echarts相关的静态数据
+  */
+  router.get('/getEchartStatic', Common.getEchartStatic);
 }

@@ -79,7 +79,7 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
         //     console.log("=====本地服务，不再启动定时器====")
         //     return
         // }
-        // Common.createTable(0)
+        Common.createTable(0)
         // 数据库里存放的monitor-master-uuid
         let monitorMasterUuidInDb = ""
         // 生成monitor-master-uuid，主服务的判断标识
