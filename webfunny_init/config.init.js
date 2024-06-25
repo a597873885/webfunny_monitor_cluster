@@ -89,11 +89,11 @@ const mysqlConfig = {
   // 日志（Clickhouse）
   "logger": {
     "write": {
-      "ip": "",
-      "port": "",
-      "dataBaseName": "",
-      "userName": "",
-      "password": ""
+      "ip": "${clickHouseDatabaseInfo.ip}",
+      "port": "${clickHouseDatabaseInfo.port}",
+      "dataBaseName": "${clickHouseDatabaseInfo.dataBaseName}",
+      "userName": "${clickHouseDatabaseInfo.userName}",
+      "password": "${clickHouseDatabaseInfo.password}"
     },
     "read": []
   }
@@ -104,6 +104,7 @@ const mysqlConfig = {
 * 配置更改后，需重启
 */
 const otherConfig = {
+  isCloud: false,            // 云服务模式
   "email": {
     "useCusEmailSys": false, // 是否使用用户自己公司的邮箱系统
     "emailUser": "",         // 邮箱
@@ -113,8 +114,8 @@ const otherConfig = {
   "segmentUrl": "",          // segment 上报地址，对接skyWalking
   "messageQueue": false,     // 是否开启消息队列
   "openMonitor": true,       // 是否开启可视化页面的监控
-  "uploadServerErrorToWebfunny": false, // 是否上报后端错误日志至Webfunny服务（推荐开启，便于排查问题）
-  "logSaveDays": 8,          // 日志存储周期
+  "uploadServerErrorToWebfunny": true, // 是否上报后端错误日志至logger服务（推荐开启，便于排查问题）
+  "logSaveDays": 366,          // 日志存储周期
   "isOpenTodayStatistic": true, // 
   "business": {
     "batchInsert": {
@@ -140,6 +141,8 @@ const otherConfig = {
   "extraCors": {                // 额外的cors配置
     "headers": ""
   },
+  "defaultCompanyId": "1",      // 默认公司Id，用于飞书登录
+  "isIpCovert": false,          // 是否开启ip地址转换，用于接口获取地理位置
 }
 module.exports = {
   licenseConfig, domainConfig, mysqlConfig, otherConfig
@@ -176,7 +179,6 @@ const run = async () => {
     const resObj = JSON.parse(res)
     if (resObj.data) {
       const dbArr = resObj.data
-      console.log(dbArr)
       dbArr.forEach((item) => {
         if (item.type === 1) {
           databaseInfo = item

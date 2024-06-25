@@ -485,10 +485,10 @@ const Utils = {
   handleTimeScopeSql(timeSize, scope) {
     const oneDayTime = 24 * 3600 * 1000
     timeSize = parseInt(timeSize, 10)
-    scope = parseInt(scope, 10) - 1
+    scope = parseInt(scope, 10)
     const nowTime = new Date().getTime() - scope * oneDayTime
     const startTime = nowTime + (timeSize - 1) * oneDayTime
-    const endTime = nowTime + (timeSize) * oneDayTime
+    const endTime = nowTime + timeSize * oneDayTime
     let startHour = new Date(startTime).Format("yyyy-MM-dd hh:00:00")
     let endHour = new Date(endTime).Format("yyyy-MM-dd hh:59:59")
     let timeSql = " happenDate>='" + startHour + "' and happenDate<='" + endHour + "' "
@@ -603,7 +603,9 @@ const Utils = {
     })
   },
   // 获取双协议结果
-  async requestForTwoProtocol(method = "post", url, param) {
+  async requestForTwoProtocol(method = "post", originUrl, param) {
+    // 先将url中的协议去掉
+    const url = originUrl.replace("https://", "").replace("http://", "")
     const methodName = method === "post" ? "postJson" : ""
     
     if (accountInfo.protocol) {

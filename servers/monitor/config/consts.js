@@ -1,3 +1,4 @@
+const { accountInfo } = require("../config/AccountConfig")
 const UPLOAD_TYPE = {
     ON_ERROR: "on_error",
     CONSOLE_ERROR: "console_error",
@@ -168,6 +169,8 @@ const CENTER_API = {
     CREATE_FLOW_DATA: "/wfCenter/createFlowData",
 }
 
+const LOCAL_SERVER = `http://127.0.0.1:${accountInfo.centerServerPort}`
+
 const PROJECT_CONFIG = JSON.stringify({
     s: true,
     ia: [""], // 停止所有的监控
@@ -200,6 +203,13 @@ const PROJECT_CONFIG = JSON.stringify({
     sc: {
         r: 100,  // 采样率
         c: 3     // 生效周期（单位：天）
+    },
+    whiteS: {
+        s: false,   // 是否开启白屏截图
+        ignoreD: 100, // DOM数量大于100，直接忽略
+        sureW: 20,  // 极可能白屏的默认dom数量
+        possW: 50,   // 疑似白屏的默认dom数量
+        scale: 0.3,  // 截屏质量，默认缩放0.3
     }
 })
 
@@ -211,5 +221,6 @@ module.exports = {
     PERF_KEYS,
     PROJECT_CONFIG,
     FLOW_TYPE,
-    UP_LOG_TYPE
+    UP_LOG_TYPE,
+    LOCAL_SERVER
 }

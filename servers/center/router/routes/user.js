@@ -14,6 +14,8 @@ module.exports = (router) => {
     router.post('/refreshValidateCode', UserController.refreshValidateCode)
     // 获取验证码
     router.post('/getValidateCode', UserController.getValidateCode)
+    // 根据手机号获取用户
+    router.post('/getUserByPhone', UserController.getUserByPhone);
     // 获取用户列表
     router.post('/getUserList', UserController.getUserList);
     // 获取当前项目所在团队的用户列表
@@ -35,12 +37,16 @@ module.exports = (router) => {
     // 管理员注册接口
     router.post('/registerForAdmin', UserController.registerForAdmin);
     
+    // 管理员创建账号
+    router.post('/addNewCustomer', UserController.addNewCustomer);
     // 注册用户
     router.get('/register', UserController.register);
     // 注册用户(saas)
     router.get('/registerForSaas', UserController.registerForSaas);
     // 注册用户API
     router.post('/registerForApi', UserController.registerForApi);
+    // 注册用户API
+    router.post('/registerForSaasWithWebsite', UserController.registerForSaasWithWebsite);
     // 重置密码
     router.get('/resetPwd', UserController.resetPwd);
     // 激活用户

@@ -23,10 +23,14 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
         setTimeout(() => {
             console.log("启动监控项目列表：", JSON.stringify(global.monitorInfo.cacheWebMonitorIdList))
         }, 10000)
-        
         // 将项目的webMonitorId列表放入全局变量，并放入bin/webMonitorIdList.js文件中
         // Common.setStopWebMonitorIdList()
     }, 3000)
+
+    setTimeout(() => {
+        // 更新流量上限信息
+        TimerCalculateController.checkLimitForCloud()
+    }, 25 * 1000)
     /**
      * 2秒后开始进行第一次分析
      * */
@@ -71,11 +75,11 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
 
     setTimeout(() => {
         Common.consoleInfo()
-        // if (process.env.LOGNAME === "jeffery") {
-        //     console.log("=====本地服务，不再启动定时器====")
-        //     return
-        // }
-        // Common.createTable(0)
+        if (process.env.LOGNAME === "jeffery") {
+            console.log("=====本地服务，不再启动定时器====")
+            return
+        }
+        Common.createTable(0)
         // 数据库里存放的monitor-master-uuid
         let monitorMasterUuidInDb = ""
         // 生成monitor-master-uuid，主服务的判断标识
@@ -90,13 +94,16 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
         }, 2000)
 
         //启动一个定时器
-        timerUtil((dateTime) => {
+        timerUtil(async (dateTime) => {
             const tempDate = new Date()
             const hourMinuteStr = dateTime.Format("hh:mm")
             const hourTimeStr = dateTime.Format("hh:mm:ss")
             const minuteTimeStr = dateTime.Format("mm:ss")
 
-            // console.log("监控定时器：" + hourTimeStr)
+            // 每隔10分钟，判断是否流量已达上限
+            if (minuteTimeStr.substring(1) == "0:00") {
+                TimerCalculateController.checkLimitForCloud()
+            }
 
             // 每隔10秒钟，取日志队列里的日志，执行入库操作
             if (minuteTimeStr.substring(4) == "0") {
@@ -124,7 +131,7 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
             }
             // 每隔1分钟执行
             if (minuteTimeStr.substring(3) == "00") {
-                ConfigController.getConfig(masterUuidKey).then((uuidRes) => {
+                await ConfigController.getConfig(masterUuidKey).then((uuidRes) => {
                     if (uuidRes && uuidRes.length) {
                         monitorMasterUuidInDb = uuidRes[0].configValue
                     }
@@ -171,13 +178,13 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
             // 如果是凌晨，则计算上一天的分析数据
             if (hourTimeStr > "00:06:00" && hourTimeStr < "00:12:00") {
                 // console.log("第二天的分析判断开始：", monitorMasterUuidInDb, global.monitorInfo.monitorMasterUuid)
-                if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {
-                    TimerCalculateController.calculateCountByDay(minuteTimeStr, -1)
-                }
+                // if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {
+                //     TimerCalculateController.calculateCountByDay(minuteTimeStr, -1)
+                // }
             } else if (minuteTimeStr > "06:00" && minuteTimeStr < "12:00") {
-                if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {
-                    TimerCalculateController.calculateCountByDay(minuteTimeStr, 0)
-                }
+                // if (monitorMasterUuidInDb === global.monitorInfo.monitorMasterUuid) {
+                //     TimerCalculateController.calculateCountByDay(minuteTimeStr, 0)
+                // }
             }
             // console.log(minuteTimeStr, monitorMasterUuidInDb, global.monitorInfo.monitorMasterUuid)
             // 每小时的前6分钟，会计算小时数据

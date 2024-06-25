@@ -1,4 +1,4 @@
-const { Common, CommonInitDataController,SdkReleaseController, TimerStatisticController, WeHandleDataController, ConfigController, TimerCalculateController } = require("../controllers/controllers")
+const { Common, CommonUpLog, CommonInitDataController,SdkReleaseController, TimerStatisticController, WeHandleDataController, ConfigController, TimerCalculateController } = require("../controllers/controllers")
 const log = require("../../../config/log");
 const AccountConfig = require("../config/AccountConfig");
 const { accountInfo, mysqlConfig } = AccountConfig
@@ -49,6 +49,11 @@ module.exports = async () => {
             });
         }, 5000)
 
+        setTimeout(() => {
+            // 更新流量上限信息
+            // TimerCalculateController.checkLimitForCloud()
+        }, 25 * 1000)
+
         // 创建系统模板和系统项目
         WeHandleDataController.createWeTemplateData().catch((e)=>{
             log.printError("创建系统模板和系统项目",e)
@@ -67,6 +72,11 @@ module.exports = async () => {
             const hourTimeStr = tempDate.Format("hh:mm:ss")
             const minuteTimeStr = tempDate.Format("mm:ss")
             try {
+                // 每隔10分钟，判断是否流量已达上限
+                if (minuteTimeStr.substring(1) == "0:00") {
+                    TimerCalculateController.checkLimitForCloud()
+                }
+
                 // 每隔1分钟执行
                 if (minuteTimeStr.substring(3) == "00") {
                     ConfigController.getConfig(masterUuidKey).then((uuidRes) => {
@@ -103,9 +113,9 @@ module.exports = async () => {
                 // }
                 //每天凌晨0点10分开始分析昨天的执行计算规则
                 if (hourTimeStr === '00:10:00'){
-                    if (eventMasterUuidInDb === global.eventInfo.eventMasterUuid) {
-                        TimerStatisticController.calculateDataPreDay('', -1);
-                    }
+                    // if (eventMasterUuidInDb === global.eventInfo.eventMasterUuid) {
+                    //     TimerStatisticController.calculateDataPreDay('', -1);
+                    // }
                 }
                 // console.log(minuteTimeStr, eventMasterUuidInDb, global.eventInfo.eventMasterUuid)
                 // 每小时的46分，开始统计今天的数据
@@ -117,17 +127,17 @@ module.exports = async () => {
                 // }
                 // 凌晨0点03分，开始统计昨天的数据
                 if (isOpenTodayStatistic && hourTimeStr == "00:03:00") {
-                    if (eventMasterUuidInDb === global.eventInfo.eventMasterUuid) {
-                        TimerStatisticController.calculateDataPreDay('', -1);
-                    }
+                    // if (eventMasterUuidInDb === global.eventInfo.eventMasterUuid) {
+                    //     TimerStatisticController.calculateDataPreDay('', -1);
+                    // }
                 }
                 // 凌晨2点30开始删除过期的数据库表
                 if (hourTimeStr == "02:00:00") {
-                    if (eventMasterUuidInDb === global.eventInfo.eventMasterUuid) {
-                        Common.startDelete()
-                    }
+                    // if (eventMasterUuidInDb === global.eventInfo.eventMasterUuid) {
+                    //     Common.startDelete()
+                    // }
                 } else if (hourTimeStr == "02:30:00") {
-                    Common.startDelete()
+                    // Common.startDelete()
                 }
                 // 每隔1分钟，取出全局变量global.eventInfo.logCountInMinute的值，并清0
                 if (minuteTimeStr.substring(3) == "00") {
@@ -149,18 +159,18 @@ module.exports = async () => {
                 // 每隔10秒钟，取日志队列里的日志，执行入库操作
                 if (minuteTimeStr.substring(4) == "0") {
                     // 取日志队列批量插入
-                    Common.handleLogInfoQueue()
+                    CommonUpLog.handleLogInfoQueue()
                     // 更新内存中的token
                     ConfigController.refreshTokenList()
                 }
             
                 // 每个小时的最后一秒执行
-                if (minuteTimeStr == "59:00") {
-                    const dayName = tempDate.Format("yyyy-MM-dd")
-                    const hourName = tempDate.Format("yyyy-MM-dd hh")
-                    // 每分钟更新流量信息
-                    TimerCalculateController.saveFlowDataByHour(dayName, hourName)
-                }
+                // if (minuteTimeStr == "59:00") {
+                //     const dayName = tempDate.Format("yyyy-MM-dd")
+                //     const hourName = tempDate.Format("yyyy-MM-dd hh")
+                //     // 每分钟更新流量信息
+                //     TimerCalculateController.saveFlowDataByHour(dayName, hourName)
+                // }
 
             } catch(e) {
                 log.printError("定时器执行报错：", e)

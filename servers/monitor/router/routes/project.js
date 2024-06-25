@@ -22,6 +22,8 @@ module.exports = (router) => {
   router.get('/project/updateMonitorCode', ProjectController.updateMonitorCode);
   // 获取所有应用列表
   router.get('/project/list/all', ProjectController.getAllProjectList);
+  // 获取公司下所有应用列表
+  router.get('/getAllProjectWithCompanyId', ProjectController.getAllProjectWithCompanyId);
   // 根据公司ID, 获取所有应用列表, 健康分排序
   router.get('/getAllProjectListByCompanyId', ProjectController.getAllProjectListByCompanyId);
   // 获取所有应用列表详情
@@ -52,6 +54,8 @@ module.exports = (router) => {
   router.post('/getProjectHealthByScore', ProjectController.getProjectHealthByScore)
   // 保存项目配置
   router.post('/saveProjectConfig', ProjectController.saveProjectConfig)
+  // 保存项目SDK配置
+  router.post('/saveProjectSdkConfig', ProjectController.saveProjectSdkConfig)
   // 查询项目流量开启状态
   router.post('/getFlowSwitch', ProjectController.getFlowSwitch)
   // 开启服务器流量插入
@@ -68,4 +72,8 @@ module.exports = (router) => {
   router.post('/setWebHook', ProjectController.setWebHook);
   // 设置观察者
   router.post('/addViewers', ProjectController.addViewers);
+  // 更改项目名称
+  router.post('/saveNewProjectName', ProjectController.saveNewProjectName);
+  // 设置日志保存时间
+  router.post('/project/resetSaveDays', ProjectController.resetSaveDays);
 }
