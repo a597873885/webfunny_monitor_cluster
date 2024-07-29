@@ -33,7 +33,7 @@ module.exports = async (customerWarningCallback, serverType = "master") => {
     setTimeout(() => {
 
     }, 20000)
-    Common.consoleLogo()
+    // Common.consoleLogo()
     
     /** * 定时任务  开始 */
     setTimeout(() => {
