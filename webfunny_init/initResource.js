@@ -213,4 +213,4 @@ setTimeout(() => {
 }, 15 * 1000)
 
 // 执行启动点位
-UpEvents.prd()
+// UpEvents.prd()

@@ -1,0 +1,5 @@
+require("colors")
+console.log("项目类型：小程序企业版".cyan)
+console.log("到期时间：2027年12月31日".cyan)
+console.log("应用个数：不限制".cyan)
+console.log("打开次数：3000万次/月".cyan)

@@ -214,4 +214,4 @@ fs.mkdir( rootPath + "/alarm", function(err){
   })
 });
 // 执行初始化点位
-UpEvents.bootstrap()
+// UpEvents.bootstrap()
